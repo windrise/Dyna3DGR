@@ -1,0 +1,42 @@
+# Core dependencies
+numpy>=1.22.0
+torch>=1.12.0
+torchvision
+scipy>=1.10.0
+opencv-python
+Pillow
+PyYAML
+tqdm
+
+# Visualization and logging
+tensorboard
+matplotlib
+open3d
+seaborn
+
+# Image processing
+scikit-image
+imageio
+lpips
+pytorch_msssim
+piq
+
+# Point cloud and 3D operations
+plyfile
+
+# Medical imaging
+nibabel
+monai
+
+# ODL for CT reconstruction
+odl
+
+# Other utilities
+scikit-learn
+hydra-core
+
+# Optional: for GUI
+dearpygui
+
+# PyTorch3D (install separately with CUDA support)
+# pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu113_pyt1121/download.html
