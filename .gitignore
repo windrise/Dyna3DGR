@@ -1,0 +1,5 @@
+# Local Python/CUDA build artifacts (existing tracked files are unchanged).
+__pycache__/
+*.py[cod]
+build/
+*.egg-info/

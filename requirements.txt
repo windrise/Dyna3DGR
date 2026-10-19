@@ -39,4 +39,8 @@ hydra-core
 dearpygui
 
 # PyTorch3D (install separately with CUDA support)
-# pip install pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py38_cu113_pyt1121/download.html
+# See README.md for the separate, version-matched PyTorch3D installation step.
+
+# Required by train.py and PyTorch CUDA JIT builds
+SimpleITK
+ninja

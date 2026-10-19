@@ -96,20 +96,57 @@ ACDC_info.json                   # Contains ED/ES frame indices for each patient
 
 ## Installation
 
-1. Clone this repository
-2. Install dependencies:
+The training path requires an NVIDIA GPU, CUDA-enabled PyTorch, a compatible
+CUDA toolkit (`nvcc`), and a C++ compiler. Importing the intensity wrapper no
+longer compiles CUDA; its first computation builds the bundled kernel with Ninja.
+CPU-only training is not supported.
+
+1. Clone with the pinned source dependencies:
+
 ```bash
-pip install -r requirements.txt
+git clone --recurse-submodules https://github.com/windrise/Dyna3DGR.git
+cd Dyna3DGR
+# Also run this after updating an existing checkout:
+git submodule update --init --recursive
+python scripts/check_source_dependencies.py
 ```
 
-3. Build the CUDA submodules:
-```bash
-cd submodules/diff-gaussian-rasterization
-pip install .
+GitHub's source ZIP does not include submodule contents. Use a Git checkout for
+these instructions. `simple-knn` and the rasterizer's GLM headers are pinned to
+specific revisions; see [provenance and validation limits](docs/reproducibility.md).
 
-cd ../simple-knn
-pip install .
+2. In an isolated Python environment, install a mutually compatible
+   [PyTorch/CUDA build](https://pytorch.org/get-started/locally/) and CUDA toolkit.
+   Then install the Python requirements:
+
+```bash
+python -m pip install -r requirements.txt
 ```
+
+3. Install **PyTorch3D** separately, following its
+   [official installation instructions](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md)
+   for the selected Python/PyTorch/CUDA versions. It is required by the deformation
+   code; the old Python 3.8/CUDA 11.3 wheel example is not a general installation recipe.
+
+4. Build the local CUDA extensions with the active PyTorch environment:
+
+```bash
+python -m pip install --no-build-isolation ./submodules/simple-knn
+python -m pip install --no-build-isolation ./submodules/diff-gaussian-rasterization
+python -c "import torch, SimpleITK, pytorch3d.ops; from simple_knn._C import distCUDA2; import diff_gaussian_rasterization; print('CUDA available:', torch.cuda.is_available(), 'PyTorch CUDA:', torch.version.cuda)"
+```
+
+5. Run the focused release checks before starting training:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The CUDA tests compare small forward/backward cases with a PyTorch reference,
+including partial thread blocks, a non-default stream, and empty input. They
+explicitly **skip** when CUDA/PyTorch/toolkit is unavailable. A skipped CUDA suite
+is not a successful build or numerical validation. This release repair has no
+verified end-to-end training/version matrix; see the [validation checklist](docs/reproducibility.md#validation).
 
 ## Dependencies
 
@@ -178,4 +215,6 @@ If you find this code useful for your research, please cite our paper:
 
 ## License
 
-This project is licensed under the terms specified in the LICENSE file.
+This project is licensed under the terms specified in the LICENSE file. Third-party
+components retain their own licenses, including the non-commercial research/evaluation
+terms for simple-knn and the bundled rasterizer. See [third-party provenance](docs/reproducibility.md#source-provenance-and-licenses).
