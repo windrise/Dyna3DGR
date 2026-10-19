@@ -1197,8 +1197,8 @@ class ControlNodeWarp(nn.Module):
             # print('Building Learnable Gaussians for Nodes!')
             from scene.gaussian_model import GaussianModel, BasicPointCloud, StandardGaussianModel
             pcd = BasicPointCloud(points=self.nodes[..., :3].detach(), colors=torch.zeros_like(self.nodes[..., :3]), normals=self.nodes[..., :3].detach())
-            self.gs = StandardGaussianModel(sh_degree=0, all_the_same=True, with_motion_mask=False)  # blender datas are all dynamic
-            self.gs.create_from_pcd(pcd=pcd, spatial_lr_scale=0., print_info=False)
+            self.gs = StandardGaussianModel(all_the_same=True, with_motion_mask=False)  # blender datas are all dynamic
+            self.gs.create_from_points_cloud(pcd=pcd, spatial_lr_scale=0., print_info=False)
             self.gs._scaling.data = torch.log(1e-2 * torch.ones_like(self.gs._scaling))
             self.gs._xyz.data = self.nodes[..., :3]
         return self.gs
@@ -1221,8 +1221,8 @@ class ControlNodeWarp(nn.Module):
             print('Initialize Learnable Gaussians for Nodes with Point Clouds!')
             from scene.gaussian_model import GaussianModel, BasicPointCloud, StandardGaussianModel
             pcd = BasicPointCloud(points=init_pcl.detach(), colors=torch.zeros_like(init_pcl), normals=torch.zeros_like(init_pcl))
-            self.gs = StandardGaussianModel(sh_degree=0, all_the_same=True, with_motion_mask=with_motion_mask)  # blender datas are all dynamic
-            self.gs.create_from_pcd(pcd=pcd, spatial_lr_scale=0., print_info=False)
+            self.gs = StandardGaussianModel(all_the_same=True, with_motion_mask=with_motion_mask)  # blender datas are all dynamic
+            self.gs.create_from_points_cloud(pcd=pcd, spatial_lr_scale=0., print_info=False)
         return self.gs
     def init_gaussians_ca(self, init_pcl, with_motion_mask):
         if not hasattr(self, 'gs') or self.gs is None:
